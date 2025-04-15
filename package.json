@@ -1,0 +1,27 @@
+{
+    "name": "profile-website",
+    "version": "1.0.0",
+    "description": "A profile website with projects and achievements",
+    "main": "dist/index.js",
+    "scripts": {
+        "start": "node dist/index.js",
+        "dev": "ts-node src/index.ts",
+        "build": "tsc",
+        "watch": "tsc -w"
+    },
+    "dependencies": {
+        "body-parser": "^1.20.2",
+        "express": "^4.18.2",
+        "mongoose": "^7.5.0",
+        "morgan": "^1.10.0",
+        "pug": "^3.0.2"
+    },
+    "devDependencies": {
+        "@types/express": "^4.17.17",
+        "@types/mongoose": "^5.11.97",
+        "@types/morgan": "^1.9.5",
+        "@types/node": "^20.17.30",
+        "ts-node": "^10.9.1",
+        "typescript": "^5.2.2"
+    }
+}

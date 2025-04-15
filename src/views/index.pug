@@ -1,0 +1,40 @@
+extends layout
+
+block content
+  section.hero
+    .container
+      h1 Welcome to My Profile
+      p This is my personal portfolio showcasing my projects and achievements
+
+  section.recent-projects
+    h2 Recent Projects
+    .projects-grid
+      if projects && projects.length > 0
+        each project in projects
+          .project-card
+            h3= project.title
+            p= project.description.substring(0, 100) + '...'
+            if project.projectUrl
+              a.btn.project-link(href=project.projectUrl, target="_blank") Visit Project
+            a.btn(href=`/projects/${project._id}`) View Details
+      else
+        p No projects available yet.
+
+    .view-all
+      a.btn(href='/projects') View All Projects
+
+  section.recent-achievements
+    h2 Recent Achievements
+    .achievements-list
+      if achievements && achievements.length > 0
+        each achievement in achievements
+          .achievement-card
+            h3= achievement.title
+            p.date Achieved on: #{new Date(achievement.dateAchieved).toLocaleDateString()}
+            p= achievement.description.substring(0, 100) + '...'
+            a.btn(href=`/achievements/${achievement._id}`) View Details
+      else
+        p No achievements available yet.
+
+    .view-all
+      a.btn(href='/achievements') View All Achievements

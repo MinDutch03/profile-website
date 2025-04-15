@@ -1,0 +1,71 @@
+extends layout
+
+block content
+  section.achievements-header
+    h1 My Achievements
+    p A record of my accomplishments and milestones
+
+  section.achievements-list
+    if achievements && achievements.length > 0
+      each achievement in achievements
+        .achievement-card
+          h3= achievement.title
+          p.date Achieved on: #{new Date(achievement.dateAchieved).toLocaleDateString()} at #{achievement.timeOfAchievement}
+          p= achievement.description
+          a.btn(href=`/achievements/${achievement._id}`) View Details
+    else
+      p No achievements available yet.
+
+  section.add-achievement
+    h2 Add New Achievement
+    form#addAchievementForm
+      .form-group
+        label(for="title") Title:
+        input#title(type="text" name="title" required)
+
+      .form-group
+        label(for="description") Description:
+        textarea#description(name="description" required)
+
+      .form-group
+        label(for="dateAchieved") Date Achieved:
+        input#dateAchieved(type="date" name="dateAchieved" required)
+
+      .form-group
+        label(for="timeOfAchievement") Time of Achievement:
+        input#timeOfAchievement(type="time" name="timeOfAchievement" required)
+
+      button.btn(type="submit") Add Achievement
+
+  script.
+    document.getElementById('addAchievementForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const formData = new FormData(e.target);
+      const achievementData = {
+        title: formData.get('title'),
+        description: formData.get('description'),
+        dateAchieved: formData.get('dateAchieved'),
+        timeOfAchievement: formData.get('timeOfAchievement')
+      };
+
+      try {
+        const response = await fetch('/achievements', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(achievementData)
+        });
+
+        const result = await response.json();
+        if (result.success) {
+          window.location.reload();
+        } else {
+          alert('Failed to add achievement');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred');
+      }
+    });

@@ -1,0 +1,89 @@
+extends layout
+
+block content
+  section.projects-header
+    h1 My Projects
+    p A collection of my past and current projects
+
+  section.projects-grid
+    if projects && projects.length > 0
+      each project in projects
+        .project-card
+          h3= project.title
+          p.date #{new Date(project.startDate).toLocaleDateString()} - #{project.endDate ? new Date(project.endDate).toLocaleDateString() : 'Present'}
+          p= project.description.substring(0, 150) + '...'
+          if project.technologies && project.technologies.length > 0
+            .technologies
+              p Technologies:
+              ul.tech-tags
+                each tech in project.technologies
+                  li= tech
+          if project.projectUrl
+            a.btn.project-link(href=project.projectUrl, target="_blank") Visit Project
+          a.btn(href=`/projects/${project._id}`) View Details
+    else
+      p No projects available yet.
+
+  section.add-project
+    h2 Add New Project
+    form#addProjectForm
+      .form-group
+        label(for="title") Title:
+        input#title(type="text" name="title" required)
+
+      .form-group
+        label(for="description") Description:
+        textarea#description(name="description" required)
+
+      .form-group
+        label(for="startDate") Start Date:
+        input#startDate(type="date" name="startDate" required)
+
+      .form-group
+        label(for="endDate") End Date (optional):
+        input#endDate(type="date" name="endDate")
+
+      .form-group
+        label(for="technologies") Technologies (comma separated):
+        input#technologies(type="text" name="technologies")
+
+      .form-group
+        label(for="projectUrl") Project URL (optional):
+        input#projectUrl(type="text" name="projectUrl")
+
+      button.btn(type="submit") Add Project
+
+  script.
+    document.getElementById('addProjectForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const formData = new FormData(e.target);
+      const projectData = {
+        title: formData.get('title'),
+        description: formData.get('description'),
+        startDate: formData.get('startDate'),
+        endDate: formData.get('endDate') || undefined,
+        technologies: formData.get('technologies') ? formData.get('technologies').split(',').map(t => t.trim()) : [],
+        projectUrl: formData.get('projectUrl') || undefined
+      };
+
+      try {
+        const response = await fetch('/projects', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(projectData)
+        });
+
+        const result = await response.json();
+        if (result.success) {
+          window.location.reload();
+        } else {
+          alert('Failed to add project');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred');
+      }
+    });
